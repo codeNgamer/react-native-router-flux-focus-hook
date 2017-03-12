@@ -1,49 +1,66 @@
-import { Reducer } from 'react-native-router-flux'
+import { Reducer, ActionConst } from 'react-native-router-flux';
+import _ from 'lodash';
 
-/*
- * This class provides functionality to hook onto `react-native-router-flux`'s
- * FOCUS action, thereby making it possible to update a component's state when
- * it is navigated to. This is currently necessary react-native-router-flux
- * only renders a component the first time it is navigated to, or if the props
- * to a Scene is changed, but neither of these can be achieved with the back
- * button.
- *
- * See README.md for usage example
- */
-export default class NavigationStateHandler {
-  constructor() {
-    this._focusHooks = []
-  }
+const keyEvents = [
+  ActionConst.REFRESH,
+  ActionConst.FOCUS,
+];
 
-  registerFocusHook(component) {
-    const sceneKey = component.props.sceneKey
-    // make sure to bind the component to have `this` set to itself so that `setState` etc are available
-    if (component.handleNavigationSceneFocus === undefined) {
-      throw "Provided component does not define `handleNavigationSceneFocus`"
+const attachHandlers = (baseClass) => {
+  _.forEach(keyEvents, keyEvent => {
+    const actionName = _.camelCase(_.findKey(ActionConst, keyEvent));
+    const registerHookName = `register${actionName}Hook`;
+    const unregisterHookName = `unregister${actionName}Hook`;
+
+    baseClass.prototype[registerHookName] = component => {
+      const handlerName = `handleNavigationScene${actionName}`;
+      if (component[handlerName] === undefined) {
+        throw `Provided component does not define ${handlerName}`;
+      }
+
+      const boundedHandler = component.[handlerName].bind(component);
+      const { sceneKey } = component.props;
+      const hook = {  };
+      hook[keyEvent] = boundedHandler; 
+      this._addHook(hook, sceneKey);
+    };
+
+    baseClass.prototype[unregisterHookName] = component => {
+      const { sceneKey } = component.props;
+      this._removeHook(keyEvent, sceneKey);
     }
+  });
+};
 
-    const func = component.handleNavigationSceneFocus.bind(component);
-    this._focusHooks.push({ sceneKey: sceneKey, func: func})
+class NavigationStateHandler {
+  constructor() {
+    this._hooks = { };
   }
 
-  unregisterFocusHook(component) {
-    const sceneKey = component.props.sceneKey
-    this._focusHooks = this._focusHooks.filter((h) => h.sceneKey != sceneKey)
+  _addHook(hook, sceneKey) {
+    this._hooks[sceneKey] = this._hooks[sceneKey] || {};
+    this._hooks[sceneKey] = { ...this._hooks[sceneKey], ...hook };
+  }
+
+  _removeHook(hookName, sceneKey) {
+    this._hooks[sceneKey] = _.omit(this.hooks[sceneKey], hookName);
   }
 
   getReducer(params) {
     const defaultReducer = Reducer(params);
+    const isKeyEvent = (type) => _.includes(keyEvents, type);
 
     return (state, action) => {
-      if (action.scene && action.type == "REACT_NATIVE_ROUTER_FLUX_FOCUS") {
-        this._focusHooks.forEach((hook) => {
-          if (hook.sceneKey == action.scene.sceneKey) {
-            hook.func()
-          }
-        })
+      if (action.scene && isKeyEvent(action.type)) {
+        const sceneHandler = this._hooks[action.scene.sceneKey];
+        if (sceneHandler) {
+          sceneHandler[action.type]();
+        }
       }
 
       return defaultReducer(state, action);
     }
   }
 }
+
+export default attachHandlers(NavigationStateHandler);
