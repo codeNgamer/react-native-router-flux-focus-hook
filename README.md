@@ -1,4 +1,4 @@
-# Facilitating re-render, state-update, etc on navigation focus
+# Facilitating re-render, state-update, etc on navigation change 
 
 [react-native-router-flux](https://github.com/aksonov/react-native-router-flux)
 doesn't currently make it possible to hook onto the action when a `Scene` is
@@ -11,7 +11,7 @@ possible to indicate which scene components would like to have a method
 
 Installation
 
-    npm install --save leifdenby/react-native-router-flux-focus-hook
+    npm install --save react-native-router-flux-hooks
 
 Where your routes are defined import `NavigationStateHandler` from
 `react-native-router-flux-focus-hook` (sorry about the rather awkward name) and

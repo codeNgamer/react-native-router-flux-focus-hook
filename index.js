@@ -8,28 +8,31 @@ const keyEvents = [
 
 const attachHandlers = (baseClass) => {
   _.forEach(keyEvents, keyEvent => {
-    const actionName = _.camelCase(_.findKey(ActionConst, keyEvent));
+    const actionKey = _.findKey(ActionConst, constant => constant === keyEvent);
+    const actionName = _.upperFirst(_.lowerCase(actionKey));
     const registerHookName = `register${actionName}Hook`;
     const unregisterHookName = `unregister${actionName}Hook`;
 
-    baseClass.prototype[registerHookName] = component => {
+    baseClass.prototype[registerHookName] = function(component) {
       const handlerName = `handleNavigationScene${actionName}`;
       if (component[handlerName] === undefined) {
         throw `Provided component does not define ${handlerName}`;
       }
 
-      const boundedHandler = component.[handlerName].bind(component);
+      const boundedHandler = component[handlerName].bind(component);
       const { sceneKey } = component.props;
       const hook = {  };
       hook[keyEvent] = boundedHandler; 
       this._addHook(hook, sceneKey);
     };
 
-    baseClass.prototype[unregisterHookName] = component => {
+    baseClass.prototype[unregisterHookName] = function(component) {
       const { sceneKey } = component.props;
       this._removeHook(keyEvent, sceneKey);
     }
   });
+
+  return baseClass;
 };
 
 class NavigationStateHandler {
