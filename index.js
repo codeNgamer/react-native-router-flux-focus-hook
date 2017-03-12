@@ -1,7 +1,7 @@
 import { Reducer, ActionConst } from 'react-native-router-flux';
 import _ from 'lodash';
 
-const keyEvents = [
+let keyEvents = [
   ActionConst.REFRESH,
   ActionConst.FOCUS,
 ];
@@ -62,6 +62,19 @@ class NavigationStateHandler {
       }
 
       return defaultReducer(state, action);
+    }
+  }
+
+  addEvent(event) {
+    if (ActionConst[event]) {
+      keyEvents.push(event);
+      keyEvents = _.uniq(keyEvents);
+    }
+  }
+
+  removeEvent(event) {
+    if (ActionConst[event]) {
+      keyEvents = _.pull(keyEvents, event);
     }
   }
 }
