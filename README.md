@@ -42,7 +42,8 @@ Next indicate that a scene component wants to have its
 `handleNavigationScene${camelCase(ActionConst['event'])}` method called when the scene is (ActionConst['event']):
 
 ```diff
-NavigationStateHandler comes equipped with hooks for ActionConst.FOCUS and ActionConst.REFRESH. To handle other events, simply add that event like so: 
+NavigationStateHandler comes equipped with hooks for ActionConst.FOCUS and ActionConst.REFRESH.
+To handle other events, simply add that event like so: 
 +const navigationStateHandler = new NavigationStateHandler();
 navigationStateRouter.addEvent(ActionConst.Pop);
 
