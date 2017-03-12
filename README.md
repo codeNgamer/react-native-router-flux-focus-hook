@@ -45,9 +45,10 @@ Next indicate that a scene component wants to have its
 NavigationStateHandler comes equipped with hooks for ActionConst.FOCUS and ActionConst.REFRESH.
 To handle other events, simply add that event like so: 
 +const navigationStateHandler = new NavigationStateHandler();
-navigationStateRouter.addEvent(ActionConst.Pop);
+navigationStateRouter.addEvent(ActionConst.RESET);
 
-then you can use this.props.navigationStateHandler.registerPopHook in your component..
+then you can use this.props.navigationStateHandler.registerResetHook in your component..
+note: the event you add is always camelCase
 ```
 
 ```diff
