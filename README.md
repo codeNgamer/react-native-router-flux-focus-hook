@@ -47,25 +47,27 @@ To handle other events, simply add that event like so:
 +const navigationStateHandler = new NavigationStateHandler();
 navigationStateRouter.addEvent(ActionConst.RESET);
 
-then you can use this.props.navigationStateHandler.registerResetHook in your component..
-note: the event you add is always camelCase
+then you can use this.props.navigationStateHandler.registerRESETHook in your component..
+
+note: hook name is always "register${ActionConst['eventName']}Hook" and
+handler "handleNavigationSceneF${ActionConst['eventName']}"
 ```
 
 ```diff
 class DynamicComponent extends Component {
   componentDidMount() {
-    const registerHandler = `register${camelCase(ActionConst['event'])}Hook`; 
-+   this.props.navigationStateHandler.registerFocusHook(this);
+    const registerHandler = `register${ActionConst['event']}Hook`; 
++   this.props.navigationStateHandler.registerFOCUSHook(this);
 +   this.props.navigationStateHandler[registerHandler](this);
   }
 
   componentWillUnmount() {
-    const unregisterHandler = `register${camelCase(ActionConst['event'])}Hook`; 
-+   this.props.navigationStateHandler.unregisterFocusHook(this)
+    const unregisterHandler = `register${ActionConst['event']}Hook`; 
++   this.props.navigationStateHandler.unregisterFOCUSHook(this)
 +   this.props.navigationStateHandler[unregisterHandler](this);
   }
 
-  handleNavigationSceneFocus() {
+  handleNavigationSceneFOCUS() {
 +   this.setState({ date: "load new data" })
   }
 }

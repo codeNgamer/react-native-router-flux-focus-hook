@@ -8,13 +8,11 @@ let keyEvents = [
 
 const attachHandlers = (baseClass) => {
   _.forEach(keyEvents, keyEvent => {
-    const actionKey = _.findKey(ActionConst, constant => constant === keyEvent);
-    const actionName = _.upperFirst(_.lowerCase(actionKey));
-    const registerHookName = `register${actionName}Hook`;
-    const unregisterHookName = `unregister${actionName}Hook`;
+    const registerHookName = `register${keyEvent}Hook`;
+    const unregisterHookName = `unregister${keyEvent}Hook`;
 
     baseClass.prototype[registerHookName] = function(component) {
-      const handlerName = `handleNavigationScene${actionName}`;
+      const handlerName = `handleNavigationScene${keyEvent}`;
       if (component[handlerName] === undefined) {
         throw `Provided component does not define ${handlerName}`;
       }
