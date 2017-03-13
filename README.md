@@ -39,7 +39,7 @@ that `navigationStateRouter` is available to every scene component.
 Next indicate that a scene component wants to have its
 `handleNavigationSceneFocus` method called when the scene is focused:
 `handleNavigationSceneRefresh` method called when the scene is refreshed:
-`handleNavigationScene${camelCase(ActionConst['event'])}` method called when the scene is (ActionConst['event']):
+`handleNavigationScene${ActionConst['event']}` method called when the scene is (ActionConst['event']):
 
 ```diff
 NavigationStateHandler comes equipped with hooks for ActionConst.FOCUS and ActionConst.REFRESH.
