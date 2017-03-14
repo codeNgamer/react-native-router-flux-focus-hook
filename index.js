@@ -45,7 +45,7 @@ class NavigationStateHandler {
   }
 
   _removeHook(hookName, sceneKey) {
-    this._hooks[sceneKey] = _.omit(this.hooks[sceneKey], hookName);
+    this._hooks[sceneKey] = _.omit(this._hooks[sceneKey], hookName);
   }
 
   getReducer(params) {
