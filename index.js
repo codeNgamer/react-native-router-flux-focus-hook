@@ -55,7 +55,7 @@ class NavigationStateHandler {
     return (state, action) => {
       if (action.scene && isKeyEvent(action.type)) {
         const sceneHandler = this._hooks[action.scene.sceneKey];
-        if (sceneHandler) {
+        if (sceneHandler && sceneHandler[action.type]) {
           sceneHandler[action.type]();
         }
       }
