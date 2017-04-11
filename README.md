@@ -15,7 +15,7 @@ Installation
 
 
 ```diff
-+import NavigationStateHandler from 'react-native-router-flux-focus-hook'
++import NavigationStateHandler from 'react-native-router-flux-hooks'
 +const navigationStateHandler = new NavigationStateHandler()
 
 class App extends Component {
